@@ -11,7 +11,11 @@ const shell = electron.shell;
 let mainWindow
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 800, height: 600, show: false})
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false
+  })
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -43,9 +47,12 @@ ipc.on('print-to-pdf', event => {
   const pdfPath = path.join(os.tmpdir(), 'some-ducking-pdf.pdf');
   const win = BrowserWindow.fromWebContents(event.sender);
 
-  win.webContents.printToPDF({}, (error, data) => {
+  
+  win.webContents.printToPDF({
+    'printBackground': true,
+  }, (error, data) => {
     if (error) return console.log(error.message);
-
+    
     fs.writeFile(pdfPath, data, err => {
       if (err) return console.log(err.message);
       shell.openExternal('file://' + pdfPath);
